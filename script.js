@@ -221,6 +221,60 @@ function createSpotifyPlaylist(trackIds) {
 }
 
 
+// Function to fetch song details from Spotify API
+function fetchSongDetails() {
+    if (!accessToken) {
+        alert('Please login with Spotify first');
+        return;
+    }
+
+    // API endpoint to fetch song details using the provided track ID
+    const trackId = '6rqhFgbbKwnb9MLmUQDhG6'; // Replace with the provided track ID
+    const url = `https://api.spotify.com/v1/tracks/${trackId}`;
+
+    fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch song details');
+        }
+        return response.json();
+    })
+    .then(data => {
+        displaySongDetails(data); // Display song details
+    })
+    .catch(error => {
+        console.error('Error fetching song details:', error);
+        alert('Failed to fetch song details. Please try again.');
+    });
+}
+
+// Function to display song details
+function displaySongDetails(data) {
+    const songCard = document.getElementById('song-card');
+    const songName = document.getElementById('song-name');
+    const artistName = document.getElementById('artist-name');
+    const songImg = document.querySelector('.card-img');
+
+    // Update song name and artist name
+    songName.textContent = data.name;
+    artistName.textContent = data.artists[0].name;
+
+    // Update song artwork
+    if (data.album.images.length > 0) {
+        songImg.src = data.album.images[0].url;
+    } else {
+        // Use placeholder image if no artwork is available
+        songImg.src = 'placeholder-image.jpg';
+    }
+}
+
+// Call the fetchSongDetails function on page load
+window.onload = fetchSongDetails;
+
 
 
 // Add event listener to login button
