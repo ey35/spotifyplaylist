@@ -1,6 +1,10 @@
 // script.js
-const clientId = '5d6f98b8609744a9bf6a31c86322de2f';  
-const redirectUri = 'https://spotifyplaylistmakers.netlify.app/'; 
+const clientId = '5d6f98b8609744a9bf6a31c86322de2f';  // Your Spotify client ID
+const redirectUri = 'https://spotifyplaylistmakers.netlify.app/';  // Your redirect URI
+
+let likedTracks = [];
+let dislikedTracks = [];
+let accessToken = null;
 
 document.getElementById('login-btn').addEventListener('click', () => {
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-top-read playlist-modify-public playlist-modify-private`;
@@ -8,46 +12,51 @@ document.getElementById('login-btn').addEventListener('click', () => {
 });
 
 window.addEventListener('load', () => {
-    const accessToken = new URLSearchParams(window.location.hash.substring(1)).get('access_token');
+    accessToken = new URLSearchParams(window.location.hash.substring(1)).get('access_token');
     if (accessToken) {
         document.getElementById('login-btn').style.display = 'none';
         document.getElementById('preferences').style.display = 'block';
-
-        fetch('https://api.spotify.com/v1/me/top/tracks', {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const tracksContainer = document.getElementById('tracks-container');
-            data.items.forEach(track => {
-                const trackElement = document.createElement('div');
-                trackElement.classList.add('track');
-                trackElement.textContent = `${track.name} by ${track.artists.map(artist => artist.name).join(', ')}`;
-                trackElement.dataset.trackId = track.id;
-                trackElement.addEventListener('click', () => {
-                    trackElement.classList.toggle('selected');
-                });
-                tracksContainer.appendChild(trackElement);
-            });
-        })
-        .catch(error => console.error('Error fetching top tracks:', error));
-
-        document.getElementById('create-playlist-btn').addEventListener('click', () => {
-            const selectedTracks = document.querySelectorAll('.track.selected');
-            const trackUris = Array.from(selectedTracks).map(track => `spotify:track:${track.dataset.trackId}`);
-
-            if (trackUris.length > 0) {
-                createSpotifyPlaylist(accessToken, trackUris);
-            } else {
-                alert('Please select at least one track.');
-            }
-        });
+        fetchRandomSong();
     }
 });
 
-function createSpotifyPlaylist(accessToken, trackUris) {
+document.getElementById('like-btn').addEventListener('click', () => {
+    const trackId = document.getElementById('song-details').dataset.trackId;
+    likedTracks.push(trackId);
+    fetchRandomSong();
+});
+
+document.getElementById('dislike-btn').addEventListener('click', () => {
+    const trackId = document.getElementById('song-details').dataset.trackId;
+    dislikedTracks.push(trackId);
+    fetchRandomSong();
+});
+
+document.getElementById('create-playlist-btn').addEventListener('click', () => {
+    if (likedTracks.length > 0) {
+        createSpotifyPlaylist(accessToken, likedTracks);
+    } else {
+        alert('Please like at least one song before creating a playlist.');
+    }
+});
+
+function fetchRandomSong() {
+    fetch('https://api.spotify.com/v1/recommendations?limit=1&market=US', {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const track = data.tracks[0];
+        const songDetails = document.getElementById('song-details');
+        songDetails.textContent = `${track.name} by ${track.artists.map(artist => artist.name).join(', ')}`;
+        songDetails.dataset.trackId = track.id;
+    })
+    .catch(error => console.error('Error fetching random song:', error));
+}
+
+function createSpotifyPlaylist(accessToken, trackIds) {
     fetch('https://api.spotify.com/v1/me', {
         headers: {
             'Authorization': `Bearer ${accessToken}`
@@ -63,8 +72,8 @@ function createSpotifyPlaylist(accessToken, trackUris) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                name: 'My Custom Playlist',
-                description: 'A playlist created based on my likes and dislikes.',
+                name: 'Liked Songs Playlist',
+                description: 'A playlist created based on songs you liked.',
                 public: false
             })
         })
@@ -78,7 +87,7 @@ function createSpotifyPlaylist(accessToken, trackUris) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    uris: trackUris
+                    uris: trackIds.map(id => `spotify:track:${id}`)
                 })
             })
             .then(response => response.json())
