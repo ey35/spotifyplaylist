@@ -1,6 +1,6 @@
 // script.js
-const clientId = 'YOUR_SPOTIFY_CLIENT_ID';  // Replace with your Spotify client ID
-const redirectUri = 'http://localhost:5500';  // Replace with your redirect URI
+const clientId = '5d6f98b8609744a9bf6a31c86322de2f';  
+const redirectUri = 'https://spotifyplaylistmakers.netlify.app/'; 
 
 document.getElementById('login-btn').addEventListener('click', () => {
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-top-read playlist-modify-public playlist-modify-private`;
