@@ -1,46 +1,46 @@
-// script.js
-const clientId = '5d6f98b8609744a9bf6a31c86322de2f';  // Your Spotify client ID
-const redirectUri = 'https://spotifyplaylistmakers.netlify.app/';  // Your redirect URI
+// Define constants for OAuth 2.0 authentication
+const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
+const CLIENT_ID = '5d6f98b8609744a9bf6a31c86322de2f'; // Your Spotify client ID
+const REDIRECT_URI = 'https://spotifyplaylistmakers.netlify.app/'; // Your redirect URI
+const RESPONSE_TYPE = 'token';
+const SCOPES = 'user-top-read playlist-modify-public playlist-modify-private';
 
 let likedTracks = [];
 let dislikedTracks = [];
 let accessToken = null;
 
-document.getElementById('login-btn').addEventListener('click', () => {
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-top-read playlist-modify-public playlist-modify-private`;
+// Function to handle login with Spotify
+function handleLogin() {
+    const codeVerifier = generateCodeVerifier();
+    const codeChallenge = generateCodeChallenge(codeVerifier);
+    const state = generateRandomString();
+    const authUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPES}&code_challenge=${codeChallenge}&code_challenge_method=S256&state=${state}`;
     window.location.href = authUrl;
-});
+}
 
-window.addEventListener('load', () => {
-    accessToken = new URLSearchParams(window.location.hash.substring(1)).get('access_token');
-    console.log("Access token:", accessToken); // Log the access token to the console
-    if (accessToken) {
-        document.getElementById('login-btn').style.display = 'none';
-        document.getElementById('preferences').style.display = 'block';
-        fetchRecommendations();
-    }
-});
+// Function to generate a code verifier
+function generateCodeVerifier() {
+    // Generate a random string for the code verifier
+    const verifier = [...Array(64)].map(() => Math.random().toString(36)[2]).join('');
+    return verifier;
+}
 
-document.getElementById('like-btn').addEventListener('click', () => {
-    const trackId = document.getElementById('song-details').dataset.trackId;
-    likedTracks.push(trackId);
-    fetchRecommendations();
-});
+// Function to generate a code challenge
+function generateCodeChallenge(codeVerifier) {
+    // Generate the code challenge using SHA256 hashing algorithm
+    const encoder = new TextEncoder();
+    const data = encoder.encode(codeVerifier);
+    return base64URL(CryptoJS.SHA256(data));
+}
 
-document.getElementById('dislike-btn').addEventListener('click', () => {
-    const trackId = document.getElementById('song-details').dataset.trackId;
-    dislikedTracks.push(trackId);
-    fetchRecommendations();
-});
+// Function to generate a random string
+function generateRandomString() {
+    // Generate a random string for the state parameter
+    const state = [...Array(16)].map(() => Math.random().toString(36)[2]).join('');
+    return state;
+}
 
-document.getElementById('create-playlist-btn').addEventListener('click', () => {
-    if (likedTracks.length > 0) {
-        createSpotifyPlaylist(accessToken, likedTracks);
-    } else {
-        alert('Please like at least one song before creating a playlist.');
-    }
-});
-
+// Function to fetch recommendations from Spotify
 function fetchRecommendations() {
     const seedTracks = likedTracks.concat(dislikedTracks).slice(-5); // Use the last 5 liked and disliked tracks as seeds
     const url = `https://api.spotify.com/v1/recommendations?limit=1&market=US&seed_tracks=${seedTracks.join(',')}`;
@@ -65,6 +65,30 @@ function fetchRecommendations() {
     .catch(error => console.error('Error fetching recommendations:', error));
 }
 
+// Function to handle liking a song
+document.getElementById('like-btn').addEventListener('click', () => {
+    const trackId = document.getElementById('song-details').dataset.trackId;
+    likedTracks.push(trackId);
+    fetchRecommendations();
+});
+
+// Function to handle disliking a song
+document.getElementById('dislike-btn').addEventListener('click', () => {
+    const trackId = document.getElementById('song-details').dataset.trackId;
+    dislikedTracks.push(trackId);
+    fetchRecommendations();
+});
+
+// Function to handle creating a Spotify playlist
+document.getElementById('create-playlist-btn').addEventListener('click', () => {
+    if (likedTracks.length > 0) {
+        createSpotifyPlaylist(accessToken, likedTracks);
+    } else {
+        alert('Please like at least one song before creating a playlist.');
+    }
+});
+
+// Function to create a Spotify playlist
 function createSpotifyPlaylist(accessToken, trackIds) {
     fetch('https://api.spotify.com/v1/me', {
         headers: {
