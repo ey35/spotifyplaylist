@@ -1,69 +1,64 @@
-/* styles.css */
 body {
     font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #1DB954 30%, #191414 100%);
+    color: white;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
-#app {
-    text-align: center;
-    padding: 30px;
-    background-color: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 300px;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 20px;
-    border: none;
-    border-radius: 5px;
-}
-
-#login-btn {
-    background-color: #1db954;
-    color: white;
-}
-
-#preferences {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#song-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-}
-
-#like-btn, #dislike-btn {
-    background-color: #e0e0e0;
-    color: black;
-    width: 100px;
-}
-
-#like-btn {
-    background-color: #4caf50;
-    color: white;
-    margin-bottom: 10px;
-}
-
-#dislike-btn {
-    background-color: #f44336;
-    color: white;
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
 }
 
 #song-details {
-    margin-bottom: 20px;
-    font-size: 18px;
-    font-weight: bold;
+    margin: 20px 0;
+    font-size: 1.5em;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+button {
+    margin: 10px;
+    padding: 15px 30px;
+    font-size: 1em;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+}
+
+button#login-btn {
+    background: #1DB954;
+    color: white;
+}
+
+button#like-btn {
+    background: #1DB954;
+    color: white;
+}
+
+button#dislike-btn {
+    background: #FF0000;
+    color: white;
+}
+
+button#create-playlist-btn {
+    background: #191414;
+    color: white;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.95);
 }
