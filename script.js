@@ -16,20 +16,20 @@ window.addEventListener('load', () => {
     if (accessToken) {
         document.getElementById('login-btn').style.display = 'none';
         document.getElementById('preferences').style.display = 'block';
-        fetchRandomSong();
+        fetchRecommendations();
     }
 });
 
 document.getElementById('like-btn').addEventListener('click', () => {
     const trackId = document.getElementById('song-details').dataset.trackId;
     likedTracks.push(trackId);
-    fetchRandomSong();
+    fetchRecommendations();
 });
 
 document.getElementById('dislike-btn').addEventListener('click', () => {
     const trackId = document.getElementById('song-details').dataset.trackId;
     dislikedTracks.push(trackId);
-    fetchRandomSong();
+    fetchRecommendations();
 });
 
 document.getElementById('create-playlist-btn').addEventListener('click', () => {
@@ -40,8 +40,9 @@ document.getElementById('create-playlist-btn').addEventListener('click', () => {
     }
 });
 
-function fetchRandomSong() {
-    fetch('https://api.spotify.com/v1/recommendations?limit=1&market=US', {
+function fetchRecommendations() {
+    const seedTracks = likedTracks.concat(dislikedTracks).slice(-5); // Use the last 5 liked and disliked tracks as seeds
+    fetch(`https://api.spotify.com/v1/recommendations?limit=1&market=US&seed_tracks=${seedTracks.join(',')}`, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }
@@ -53,7 +54,7 @@ function fetchRandomSong() {
         songDetails.textContent = `${track.name} by ${track.artists.map(artist => artist.name).join(', ')}`;
         songDetails.dataset.trackId = track.id;
     })
-    .catch(error => console.error('Error fetching random song:', error));
+    .catch(error => console.error('Error fetching recommendations:', error));
 }
 
 function createSpotifyPlaylist(accessToken, trackIds) {
