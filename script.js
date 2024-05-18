@@ -47,7 +47,12 @@ function fetchRecommendations() {
             'Authorization': `Bearer ${accessToken}`
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch recommendations');
+        }
+        return response.json();
+    })
     .then(data => {
         const track = data.tracks[0];
         const songDetails = document.getElementById('song-details');
@@ -63,7 +68,12 @@ function createSpotifyPlaylist(accessToken, trackIds) {
             'Authorization': `Bearer ${accessToken}`
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+        }
+        return response.json();
+    })
     .then(userData => {
         const userId = userData.id;
         fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
@@ -78,7 +88,12 @@ function createSpotifyPlaylist(accessToken, trackIds) {
                 public: false
             })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to create playlist');
+            }
+            return response.json();
+        })
         .then(playlistData => {
             const playlistId = playlistData.id;
             fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
@@ -91,7 +106,12 @@ function createSpotifyPlaylist(accessToken, trackIds) {
                     uris: trackIds.map(id => `spotify:track:${id}`)
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to add tracks to playlist');
+                }
+                return response.json();
+            })
             .then(() => {
                 alert('Playlist created successfully!');
             })
