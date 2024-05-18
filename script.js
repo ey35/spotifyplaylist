@@ -155,7 +155,7 @@ document.getElementById('create-playlist-btn').addEventListener('click', () => {
 
 // Function to create a Spotify playlist
 function createSpotifyPlaylist(trackIds) {
-    const url = `https://api.spotify.com/v1/users/${userId}/playlists`;
+    const url = `https://api.spotify.com/v1/me/playlists`;
     fetch(url, {
         method: 'POST',
         headers: {
@@ -193,3 +193,4 @@ function createSpotifyPlaylist(trackIds) {
 
 // Add event listener to login button
 document.getElementById('login-btn').addEventListener('click', handleLogin);
+``
