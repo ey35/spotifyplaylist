@@ -13,6 +13,7 @@ document.getElementById('login-btn').addEventListener('click', () => {
 
 window.addEventListener('load', () => {
     accessToken = new URLSearchParams(window.location.hash.substring(1)).get('access_token');
+    console.log("Access token:", accessToken); // Log the access token to the console
     if (accessToken) {
         document.getElementById('login-btn').style.display = 'none';
         document.getElementById('preferences').style.display = 'block';
@@ -42,7 +43,9 @@ document.getElementById('create-playlist-btn').addEventListener('click', () => {
 
 function fetchRecommendations() {
     const seedTracks = likedTracks.concat(dislikedTracks).slice(-5); // Use the last 5 liked and disliked tracks as seeds
-    fetch(`https://api.spotify.com/v1/recommendations?limit=1&market=US&seed_tracks=${seedTracks.join(',')}`, {
+    const url = `https://api.spotify.com/v1/recommendations?limit=1&market=US&seed_tracks=${seedTracks.join(',')}`;
+    console.log("Request URL:", url); // Log the request URL to the console
+    fetch(url, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
         }
