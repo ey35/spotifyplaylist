@@ -37,7 +37,10 @@ function fetchRecommendations() {
         return;
     }
 
-    const seedTracks = likedTracks.slice(-5).concat(dislikedTracks.slice(-5)); // Use the last 5 liked and disliked tracks as seeds
+    let seedTracks = likedTracks.slice(-5).concat(dislikedTracks.slice(-5));
+    if (seedTracks.length === 0) {
+        seedTracks = ['3n3Ppam7vgaVa1iaRUc9Lp']; // Fallback to a default track if no seed tracks are available
+    }
     const url = `https://api.spotify.com/v1/recommendations?limit=1&market=US&seed_tracks=${seedTracks.join(',')}`;
     fetch(url, {
         headers: {
@@ -46,7 +49,7 @@ function fetchRecommendations() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.tracks.length > 0) {
+        if (data.tracks && data.tracks.length > 0) {
             const track = data.tracks[0];
             const songDetails = document.getElementById('song-details');
             songDetails.textContent = `${track.name} by ${track.artists.map(artist => artist.name).join(', ')}`;
