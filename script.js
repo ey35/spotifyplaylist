@@ -164,6 +164,24 @@ document.getElementById('create-playlist-btn').addEventListener('click', () => {
 });
 
 // Function to create a Spotify playlist
+let playlistCreated = false;
+
+// Function to handle creating a Spotify playlist
+document.getElementById('create-playlist-btn').addEventListener('click', () => {
+    if (!accessToken) {
+        alert('Please login with Spotify first');
+        return;
+    }
+    if (likedTracks.length > 0 && !playlistCreated) {
+        createSpotifyPlaylist(likedTracks);
+    } else if (playlistCreated) {
+        alert('Playlist already created');
+    } else {
+        alert('Please like at least one song before creating a playlist.');
+    }
+});
+
+// Function to create a Spotify playlist
 function createSpotifyPlaylist(trackIds) {
     const url = `https://api.spotify.com/v1/me/playlists`;
     fetch(url, {
@@ -195,11 +213,15 @@ function createSpotifyPlaylist(trackIds) {
         })
         .then(() => {
             alert('Playlist created successfully!');
+            playlistCreated = true;
         })
         .catch(error => console.error('Error adding tracks to playlist:', error));
     })
     .catch(error => console.error('Error creating playlist:', error));
 }
+
+
+
 
 // Add event listener to login button
 document.getElementById('login-btn').addEventListener('click', handleLogin);
