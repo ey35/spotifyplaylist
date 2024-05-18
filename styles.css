@@ -71,23 +71,22 @@ button:active {
   width: 300px; /* Adjust width as needed */
 }
 
-.card img {
+.card .card-img {
   width: 100%;
   height: auto;
   border-radius: 12px 12px 0 0;
 }
 
-.song-details {
+.card .details {
   padding: 20px;
 }
 
-.song-details h2 {
+.card .details .song-name {
   font-size: 1.5rem;
   margin-bottom: 8px;
 }
 
-.song-details p {
+.card .details .artist-name {
   font-size: 1rem;
   color: rgba(0, 0, 0, 0.6);
 }
-
