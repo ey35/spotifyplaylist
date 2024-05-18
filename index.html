@@ -8,11 +8,14 @@
 </head>
 <body>
     <div id="app">
-        <h1>Create Your Spotify Playlist</h1>
+        <h1>Spotify Playlist Creator</h1>
         <button id="login-btn">Login with Spotify</button>
         <div id="preferences" style="display: none;">
-            <h2>Select Your Preferences</h2>
-            <div id="tracks-container"></div>
+            <div id="song-container">
+                <div id="song-details"></div>
+                <button id="like-btn">Like</button>
+                <button id="dislike-btn">Dislike</button>
+            </div>
             <button id="create-playlist-btn">Create Playlist</button>
         </div>
     </div>
