@@ -1,6 +1,6 @@
 const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
 const CLIENT_ID = '5d6f98b8609744a9bf6a31c86322de2f';
-const REDIRECT_URI = 'https://spotifyplaylistmakers.netlify.app/';
+const REDIRECT_URI = 'https://accounts.spotify.com/authorize/';
 const RESPONSE_TYPE = 'token';
 const SCOPES = 'user-top-read playlist-modify-public playlist-modify-private';
 
