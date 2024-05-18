@@ -6,40 +6,64 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 #app {
     text-align: center;
-    padding: 20px;
+    padding: 30px;
     background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 300px;
 }
 
-#login-btn, #create-playlist-btn {
+button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
     margin-top: 20px;
+    border: none;
+    border-radius: 5px;
 }
 
-#tracks-container {
+#login-btn {
+    background-color: #1db954;
+    color: white;
+}
+
+#preferences {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+#song-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 20px;
 }
 
-.track {
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
+#like-btn, #dislike-btn {
+    background-color: #e0e0e0;
+    color: black;
+    width: 100px;
 }
 
-.track.selected {
+#like-btn {
     background-color: #4caf50;
     color: white;
+    margin-bottom: 10px;
+}
+
+#dislike-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+#song-details {
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
 }
