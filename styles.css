@@ -62,3 +62,32 @@ button:hover {
 button:active {
     transform: scale(0.95);
 }
+
+.card {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 300px; /* Adjust width as needed */
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px 12px 0 0;
+}
+
+.song-details {
+  padding: 20px;
+}
+
+.song-details h2 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.song-details p {
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
