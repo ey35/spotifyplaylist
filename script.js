@@ -44,17 +44,16 @@ function fetchRecommendations() {
             'Authorization': `Bearer ${accessToken}`
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch recommendations');
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-        const track = data.tracks[0];
-        const songDetails = document.getElementById('song-details');
-        songDetails.textContent = `${track.name} by ${track.artists.map(artist => artist.name).join(', ')}`;
-        songDetails.dataset.trackId = track.id;
+        if (data.tracks.length > 0) {
+            const track = data.tracks[0];
+            const songDetails = document.getElementById('song-details');
+            songDetails.textContent = `${track.name} by ${track.artists.map(artist => artist.name).join(', ')}`;
+            songDetails.dataset.trackId = track.id;
+        } else {
+            alert('No recommendations available.');
+        }
     })
     .catch(error => console.error('Error fetching recommendations:', error));
 }
@@ -93,12 +92,7 @@ function createSpotifyPlaylist(accessToken, trackIds) {
             'Authorization': `Bearer ${accessToken}`
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch user data');
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(userData => {
         const userId = userData.id;
         fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
@@ -113,12 +107,7 @@ function createSpotifyPlaylist(accessToken, trackIds) {
                 public: false
             })
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to create playlist');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(playlistData => {
             const playlistId = playlistData.id;
             fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
@@ -130,12 +119,6 @@ function createSpotifyPlaylist(accessToken, trackIds) {
                 body: JSON.stringify({
                     uris: trackIds.map(id => `spotify:track:${id}`)
                 })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to add tracks to playlist');
-                }
-                return response.json();
             })
             .then(() => {
                 alert('Playlist created successfully!');
