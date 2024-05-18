@@ -1,32 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify Playlist Maker</title>
-    <link rel="stylesheet" href="styles.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotify Playlist Maker</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Spotify Playlist Maker</h1>
-    <div id="song-details">No song playing</div>
-    <button id="like-btn">Like</button>
-    <button id="dislike-btn">Dislike</button>
-    <button id="create-playlist-btn">Create Playlist</button>
-    <button id="login-btn">Login with Spotify</button>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
-    <script src="script.js"></script>
-
-<div class="container">
-  <div class="song-details card">
-    <img src="" alt="Song Artwork" class="card-img">
-    <div class="details">
-      <h2 class="song-name">Song Name</h2>
-      <p class="artist-name">Artist Name</p>
+  <div class="container">
+    <div class="card" id="song-card">
+      <img src="" alt="Song Artwork" class="card-img">
+      <div class="details">
+        <h2 id="song-name">Song Name</h2>
+        <p id="artist-name">Artist Name</p>
+      </div>
     </div>
   </div>
-</div>
-
+  <button id="login-btn" class="btn outline">Login with Spotify</button>
+  <script src="script.js"></script>
 </body>
 </html>
