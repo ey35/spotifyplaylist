@@ -102,12 +102,21 @@ function fetchRecommendations() {
 }
 
 // Function to play a song using Spotify Web Playback SDK
+// Function to play a song using Spotify Web Playback SDK
 function playSong(uri) {
     if (!player) {
         console.error('Player not initialized');
         return;
     }
-    player.addListener('ready', ({ device_id }) => {
+    
+    player.getCurrentState().then(state => {
+        if (!state) {
+            console.error('Player state not available');
+            return;
+        }
+        
+        const { device_id } = state;
+        
         fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
             method: 'PUT',
             headers: {
@@ -125,6 +134,7 @@ function playSong(uri) {
         .catch(error => console.error('Error playing song:', error));
     });
 }
+
 
 // Function to handle liking a song
 document.getElementById('like-btn').addEventListener('click', () => {
