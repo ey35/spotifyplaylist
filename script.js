@@ -1,6 +1,6 @@
 const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
-const CLIENT_ID = '5d6f98b8609744a9bf6a31c86322de2f'; // Your Spotify client ID
-const REDIRECT_URI = 'https://spotifyplaylistmakers.netlify.app/'; // Your redirect URI
+const CLIENT_ID = '5d6f98b8609744a9bf6a31c86322de2f';
+const REDIRECT_URI = 'https://spotifyplaylistmakers.netlify.app/';
 const RESPONSE_TYPE = 'token';
 const SCOPES = 'user-top-read playlist-modify-public playlist-modify-private';
 
@@ -23,6 +23,7 @@ function extractAccessToken() {
         localStorage.setItem('spotify_access_token', token);
         accessToken = token;
         window.location.hash = ''; // Clear the hash
+        fetchRecommendations();
     }
 }
 
@@ -35,9 +36,9 @@ function fetchRecommendations() {
         alert('Please login with Spotify first');
         return;
     }
-    const seedTracks = likedTracks.concat(dislikedTracks).slice(-5); // Use the last 5 liked and disliked tracks as seeds
+
+    const seedTracks = likedTracks.slice(-5).concat(dislikedTracks.slice(-5)); // Use the last 5 liked and disliked tracks as seeds
     const url = `https://api.spotify.com/v1/recommendations?limit=1&market=US&seed_tracks=${seedTracks.join(',')}`;
-    console.log("Request URL:", url); // Log the request URL to the console
     fetch(url, {
         headers: {
             'Authorization': `Bearer ${accessToken}`
@@ -108,4 +109,43 @@ function createSpotifyPlaylist(accessToken, trackIds) {
             },
             body: JSON.stringify({
                 name: 'Liked Songs Playlist',
-                description: 'A playlist created based on songs you 
+                description: 'A playlist created based on songs you liked.',
+                public: false
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to create playlist');
+            }
+            return response.json();
+        })
+        .then(playlistData => {
+            const playlistId = playlistData.id;
+            fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    uris: trackIds.map(id => `spotify:track:${id}`)
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to add tracks to playlist');
+                }
+                return response.json();
+            })
+            .then(() => {
+                alert('Playlist created successfully!');
+            })
+            .catch(error => console.error('Error adding tracks to playlist:', error));
+        })
+        .catch(error => console.error('Error creating playlist:', error));
+    })
+    .catch(error => console.error('Error fetching user data:', error));
+}
+
+// Add event listener to login button
+document.getElementById('login-btn').addEventListener('click', handleLogin);
